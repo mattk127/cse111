@@ -25,9 +25,8 @@ listmap<key_t,mapped_t,less_t>::~listmap() {
 template <typename key_t, typename mapped_t, class less_t>
 typename listmap<key_t,mapped_t,less_t>::iterator
 listmap<key_t,mapped_t,less_t>::insert (const value_type& pair) {
-   //DEBUGF ('l', &pair << "->" << pair);
+   DEBUGF ('l', &pair << "->" << pair);
    iterator buf = begin();
-   less_t less;
    while(buf != end() && less(buf->first, pair.first)){
       buf++;
    }
@@ -50,7 +49,11 @@ template <typename key_t, typename mapped_t, class less_t>
 typename listmap<key_t,mapped_t,less_t>::iterator
 listmap<key_t,mapped_t,less_t>::find (const key_type& that) {
    DEBUGF ('l', that);
-   return iterator();
+   iterator buf = begin();
+   while( buf != end() && buf->first != that){
+      buf++;
+   }
+   return buf;
 }
 
 //
@@ -60,7 +63,12 @@ template <typename key_t, typename mapped_t, class less_t>
 typename listmap<key_t,mapped_t,less_t>::iterator
 listmap<key_t,mapped_t,less_t>::erase (iterator position) {
    DEBUGF ('l', &*position);
-   return iterator();
+   iterator buf = position.where;
+   buf++;
+   position.where->prev->next = position.where->next;
+   position.where->next->prev = position.where->prev;
+   delete position.where
+   return buf;
 }
 
 
