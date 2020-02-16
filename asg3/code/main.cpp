@@ -4,7 +4,10 @@
 #include <exception>
 #include <iostream>
 #include <string>
+#include <regex>
+#include <fstream>
 #include <unistd.h>
+#include <assert>
 
 using namespace std;
 
@@ -33,9 +36,9 @@ void scan_options (int argc, char** argv) {
 }
 
 int main (int argc, char** argv) {
+   /*
    sys_info::execname (argv[0]);
    scan_options (argc, argv);
-
    str_str_map test;
    for (char** argp = &argv[optind]; argp != &argv[argc]; ++argp) {
       str_str_pair pair (*argp, to_string<int> (argp - argv));
@@ -53,5 +56,32 @@ int main (int argc, char** argv) {
 
    cout << "EXIT_SUCCESS" << endl;
    return EXIT_SUCCESS;
+   */
+
+  //matchlines.cpp
+  
+   regex comment_regex {R"(^\s*(#.*)?$)"};
+   regex key_value_regex {R"(^\s*(.*?)\s*=\s*(.*?)\s*$)"};
+   regex trimmed_regex {R"(^\s*([^=]+?)\s*$)"};
+   for (;;) {
+      string line;
+      getline (cin, line);
+      if (cin.eof()) break;
+      cout << endl << "input: \"" << line << "\"" << endl;
+      smatch result;
+      if (regex_search (line, result, comment_regex)) {
+         cout << "Comment or empty line." << endl;
+         continue;
+      }
+      if (regex_search (line, result, key_value_regex)) {
+         cout << "key  : \"" << result[1] << "\"" << endl;
+         cout << "value: \"" << result[2] << "\"" << endl;
+      }else if (regex_search (line, result, trimmed_regex)) {
+         cout << "query: \"" << result[1] << "\"" << endl;
+      }else {
+         assert (false and "This can not happen.");
+      }
+   }
+   return 0;
 }
 
