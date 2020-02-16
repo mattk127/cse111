@@ -28,9 +28,6 @@ listmap<key_t,mapped_t,less_t>::insert (const value_type& pair) {
    //DEBUGF ('l', &pair << "->" << pair);
    iterator buf = begin();
    less_t less;
-   if(empty()){
-      anchor
-   }
    while(buf != end() && less(buf->first, pair.first)){
       buf++;
    }
