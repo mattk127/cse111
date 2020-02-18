@@ -35,7 +35,8 @@ void scan_options (int argc, char** argv) {
 }
 
 void parse(string line, str_str_map& map){
-  regex comment_regex {R"(^\s*(#.*)?$)"}; //comment
+  regex comment_regex {R"(^\s*(#.*)?$)"};
+  regex whtspce_regex = {R"(^\s*$)"};
   regex key_value_regex {R"(^\s*(.*?)\s*=\s*(.*?)\s*$)"};
   regex key_regex {R"(^\s*([^=]+?)\s*$)"};
   regex key_eq_regex {R"(^\s*([^=]+?)\s*=\s*$)"};
@@ -45,9 +46,9 @@ void parse(string line, str_str_map& map){
   smatch result;
 
   // '#'
-  if (regex_search (line, result, comment_regex)) {
-    cout << "Comment" << endl;
-    //continue;
+  if (regex_search (line, result, comment_regex) ||
+  regex_search(line, result, whtspce_regex)){
+    return;
   }
   // "key=value"
   if (regex_search(line, result, key_value_regex)) {
@@ -57,15 +58,17 @@ void parse(string line, str_str_map& map){
     cout << result[1] << "=" << result[2] << endl;
   }else if(regex_search(line, result, key_regex)){
     itor = map.find(result[1]);
-    if(itor = map.begin()){
+    if(itor->next == map.end()){
       cout << result[1] << ": key not found" << endl;
-    }else{cout << result[1] << "=" << result[2] << endl;}
-  }else if(regex_search(line, result, key_eq_regex)){
-    itor = map.find(result[1]);
-    if(itor != map.begin()){
-     map.erase(itor);
     }else{
-      cout << "error: key not found" << endl;
+      cout << result[1] << "=" << result[2] << endl;
+    }
+  }else if(regex_search(line, result, key_eq_regex)){
+    for(auto itor = map.begin();itor != map.end();++itor){
+      if(result[1] == itor->first){
+        map.erase(itor);
+        break;
+      }
     }
   }else if(regex_search(line, result, eq_value_regex)){
     for(auto itor = map.begin();itor != map.end();++itor){
@@ -77,12 +80,6 @@ void parse(string line, str_str_map& map){
   }else{
     cerr << "Parsing error" << endl;
   }
-
-
-
-
-    //cout << result[1] << "=" << result[2] << endl;
-  //need "=" , "key =", "key", "= value"
 }
 
 int main (int argc, char** argv) {
