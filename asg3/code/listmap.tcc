@@ -34,7 +34,7 @@ template <typename key_t, typename mapped_t, class less_t> typename listmap<key_
    }
    node* swag = new node(buf.where, buf.where->prev, pair);
    buf.where->prev->next = swag;
-   buf.where->next->prev = swag;
+   buf.where->prev = swag;
    
    return iterator();
 }

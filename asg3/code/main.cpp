@@ -7,7 +7,7 @@
 #include <regex>
 #include <fstream>
 #include <unistd.h>
-
+#include <string_view>
 using namespace std;
 
 #include "listmap.h"
@@ -40,7 +40,7 @@ void parse(string line, str_str_map& map){
   regex key_regex {R"(^\s*([^=]+?)\s*$)"};
   regex key_eq_regex {R"(^\s*([^=]+?)\s*=\s*$)"};
   regex eq_value_regex {R"(^\s*=\s*(.*?)\s*$)"};
-  regex eq_regex {R"(\s*=\s*$)"};
+  regex eq_regex {R"(^\s*=\s*$)"};
   str_str_map::iterator itor;
   smatch result;
 
@@ -50,32 +50,44 @@ void parse(string line, str_str_map& map){
     return;
   }
   // "key=value"
-  if (regex_search(line, result, key_value_regex)) {
-    itor = map.find(result[1]);
-    str_str_pair newPair(result[1],result[2]);
-    map.insert(newPair);
-    cout << result[1] << "=" << result[2] << endl;
-  }else if(regex_search(line, result, key_regex)){
-    itor = map.find(result[1]);
-    if(itor.operator++() == map.end()){
-      cout << result[1] << ": key not found" << endl;
-    }else{
-      cout << result[1] << "=" << result[2] << endl;
+  if(regex_search(line, result, eq_regex)){
+    for(auto loopitor = map.begin();loopitor != map.end();++loopitor){
+      cout << loopitor->first << " = " << loopitor->second << endl;
     }
   }else if(regex_search(line, result, key_eq_regex)){
-    for(auto loopitor = map.begin();loopitor != map.end();++loopitor){
-      if(result[1] == loopitor->first){
-        map.erase(loopitor);
+    for(auto loopitor1 = map.begin();loopitor1 != map.end();++loopitor1){
+      if(result[1] == loopitor1->first){
+        map.erase(loopitor1);
         break;
       }
     }
+  }else if(regex_search(line, result, key_value_regex)) { 
+    if(result[1] == ""){
+      for(auto loopitor2 = map.begin();loopitor2 != map.end();++loopitor2){
+      if(result[2] == loopitor2->second){
+        cout << loopitor2->first << " = " << loopitor2->second << endl;
+      }
+      }
+    }else{
+    str_str_pair newPair(result[1],result[2]);
+    map.insert(newPair);
+    cout << result[1] << " = " << result[2] << endl;
+    }
+  }else if(regex_search(line, result, key_regex)){
+    itor = map.find(result[1]);
+    if(itor != map.end() && itor != str_str_map::iterator()){
+      cout << itor->first << " = " << itor->second << endl;
+    }else{
+      cout << result[1] << ": key not found" << endl;
+    }
   }else if(regex_search(line, result, eq_value_regex)){
-    for(auto loopitor1 = map.begin();loopitor1 != map.end();++loopitor1){
-      if(result[2] == loopitor1->second){
-        cout << loopitor1->first << " = " << loopitor1->second << endl;
+    for(auto loopitor2 = map.begin();loopitor2 != map.end();++loopitor2){
+      if(result[2] == loopitor2->second){
+        cout << loopitor2->first << " = " << loopitor2->second << endl;
       }
     }
-  }else{
+  }
+  else{
     cerr << "Parsing error" << endl;
   }
 }
@@ -91,10 +103,10 @@ int main (int argc, char** argv) {
   for(int itor = 1; itor < argc; ++itor){
     if(argv[itor] == std::string("-")){
       while(getline(cin,line)){
-      if(cin.eof()){break;}
-      ++count;
-      cout << argv[itor] << ": " << count << ": " << line << endl;
-      parse(line,test);
+        if(cin.eof()){break;}
+        ++count;
+        cout << argv[itor] << ": " << count << ": " << line << endl;
+        parse(line,test);
     }
     }else{
       ifstream fstream(argv[itor]);
