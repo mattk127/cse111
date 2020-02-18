@@ -12,8 +12,7 @@
 //
 // listmap::~listmap()
 //
-template <typename key_t, typename mapped_t, class less_t>
-listmap<key_t,mapped_t,less_t>::~listmap() {
+template <typename key_t, typename mapped_t, class less_t> listmap<key_t,mapped_t,less_t>::~listmap() {
    while(!empty()){
       erase(begin());
    }
@@ -22,13 +21,11 @@ listmap<key_t,mapped_t,less_t>::~listmap() {
 //
 // iterator listmap::insert (const value_type&)
 //
-template <typename key_t, typename mapped_t, class less_t>
-typename listmap<key_t,mapped_t,less_t>::iterator
-listmap<key_t,mapped_t,less_t>::insert (const value_type& pair) {
+template <typename key_t, typename mapped_t, class less_t> typename listmap<key_t,mapped_t,less_t>::iterator listmap<key_t,mapped_t,less_t>::insert (const value_type& pair) {
    DEBUGF ('l', &pair << "->" << pair);
    iterator buf = begin();
    while(buf != end() && less(buf->first, pair.first)){
-      buf++;
+      ++buf;
    }
 
    if(buf != end() && !less(pair.first, buf->first)){
@@ -45,13 +42,11 @@ listmap<key_t,mapped_t,less_t>::insert (const value_type& pair) {
 //
 // listmap::find(const key_type&)
 //
-template <typename key_t, typename mapped_t, class less_t>
-typename listmap<key_t,mapped_t,less_t>::iterator
-listmap<key_t,mapped_t,less_t>::find (const key_type& that) {
+template <typename key_t, typename mapped_t, class less_t> typename listmap<key_t,mapped_t,less_t>::iterator listmap<key_t,mapped_t,less_t>::find (const key_type& that) {
    DEBUGF ('l', that);
    iterator buf = begin();
    while( buf != end() && buf->first != that){
-      buf++;
+      ++buf;
    }
    return buf;
 }
@@ -59,14 +54,12 @@ listmap<key_t,mapped_t,less_t>::find (const key_type& that) {
 //
 // iterator listmap::erase (iterator position)
 //
-template <typename key_t, typename mapped_t, class less_t>
-typename listmap<key_t,mapped_t,less_t>::iterator
-listmap<key_t,mapped_t,less_t>::erase (iterator position) {
+template <typename key_t, typename mapped_t, class less_t> typename listmap<key_t,mapped_t,less_t>::iterator listmap<key_t,mapped_t,less_t>::erase (iterator position) {
    DEBUGF ('l', &*position);
    iterator buf = position.where;
-   buf++;
+   ++buf;
    position.where->prev->next = position.where->next;
    position.where->next->prev = position.where->prev;
-   delete position.where
+   delete position.where;
    return buf;
 }
