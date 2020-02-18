@@ -85,33 +85,41 @@ void parse(string line, str_str_map& map){
 int main (int argc, char** argv) {
   sys_info::execname (argv[0]);
   scan_options (argc, argv);
-
   str_str_map test;
+  string line = "";
+  string pname = string(argv[0]);
+  int count{0};
 
-  for (char** argp = &argv[optind]; argp != &argv[argc]; ++argp) {
-    str_str_pair pair (*argp, to_string<int> (argp - argv));
-    cout << "Before insert: " << pair << endl;
-    test.insert (pair);
+  for(int itor = 1; itor < argc; ++itor){
+    if(argv[itor] == std::string("-")){
+      while(getline(cin,line)){
+      if(cin.eof()){break;}
+      ++count;
+      cout << argv[itor] << ": " << count << ": " 
+      << line << endl;
+      parse(line,test);
+    }
+    }else{
+      ifstream fstream(argv[itor]);
+      if(fstream.fail()){
+        cerr << pname << ": " << argv[itor]
+        << ": No such file or directory" << endl;
+      }else{
+        while(getline(fstream,line)){
+          ++count;
+          cout << argv[itor] << ": " << count << ": " 
+          << line << endl;
+          parse(line,test);
+      }
+    }
   }
 
-  // for (str_str_map::iterator itor = test.begin();
-  //     itor != test.end(); ++itor) {
-  //   cout << "During iteration: " << *itor << endl;
+  // for (char** argp = &argv[optind]; argp != &argv[argc]; ++argp) {
+  //   str_str_pair pair (*argp, to_string<int> (argp - argv));
+  //   cout << "Before insert: " << pair << endl;
+  //   test.insert (pair);
   // }
 
-  // str_str_map::iterator itor = test.begin();
-  // test.erase (itor);
-
-  // cout << "EXIT_SUCCESS" << endl;
-  // return EXIT_SUCCESS;
- for (;;) {
-    string line;
-    getline (cin, line);
-    if (cin.eof()) break;
-    cout << endl << "input: \"" << line << "\"" << endl;
-    parse(line,test);
-
- }
-   return 0;
+  return EXIT_SUCCESS;
 }
 
