@@ -168,9 +168,9 @@ void fork_cixserver (server_socket& server, accepted_socket& accept) {
   }else {
     accept.close();
     if (pid < 0) {
-        log << "fork failed: " << strerror (errno) << endl;
+      log << "fork failed: " << strerror (errno) << endl;
     }else {
-        log << "forked cixserver pid " << pid << endl;
+      log << "forked cixserver pid " << pid << endl;
     }
   }
 }
