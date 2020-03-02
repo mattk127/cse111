@@ -21,28 +21,28 @@ using namespace std;
 #include <unistd.h>
 
 class logstream {
-   private:
-      ostream& out;
-      string execname_;
-   public:
+  private:
+    ostream& out;
+    string execname_;
+  public:
 
-      // Constructor may or may not have the execname available.
-      logstream (ostream& out_, const string& execname = ""):
-      out (out_), execname_ (execname) {
-      }
+    // Constructor may or may not have the execname available.
+    logstream (ostream& out_, const string& execname = ""):
+    out (out_), execname_ (execname) {
+    }
 
-      // First line of main should execname if logstream is global.
-      void execname (const string& name) { execname_ = name; }
-      string execname() { return execname_; }
+    // First line of main should execname if logstream is global.
+    void execname (const string& name) { execname_ = name; }
+    string execname() { return execname_; }
 
-      // First call should be the logstream, not cout.
-      // Then forward result to the standard ostream.
-      template <typename T>
-      ostream& operator<< (const T& obj) {
-         assert (execname_.size() > 0);
-         out << execname_ << "(" << getpid() << "): " << obj;
-         return out;
-      }
+    // First call should be the logstream, not cout.
+    // Then forward result to the standard ostream.
+    template <typename T>
+    ostream& operator<< (const T& obj) {
+      assert (execname_.size() > 0);
+      out << execname_ << "(" << getpid() << "): " << obj;
+      return out;
+    }
 
 };
 

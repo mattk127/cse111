@@ -1,27 +1,30 @@
 // $Id: protocol.cpp,v 1.11 2020-02-24 18:35:42-08 - - $
-//Matthew Klein and 
+//Matthew Klein and Andrew
 #include <string>
 #include <unordered_map>
 using namespace std;
 
 #include "protocol.h"
 
-string to_string (cix_command command) {
-   switch (command) {
-      case cix_command::ERROR  : return "ERROR"  ;
-      case cix_command::EXIT   : return "EXIT"   ;
-      case cix_command::GET    : return "GET"    ;
-      case cix_command::HELP   : return "HELP"   ;
-      case cix_command::LS     : return "LS"     ;
-      case cix_command::PUT    : return "PUT"    ;
-      case cix_command::RM     : return "RM"     ;
-      case cix_command::FILE: return "FILE";
-      case cix_command::LSOUT  : return "LSOUT"  ;
-      case cix_command::ACK    : return "ACK"    ;
-      case cix_command::NAK    : return "NAK"    ;
-      default                  : return "????"   ;
-   };
-}
+struct cix_hasher {
+  size_t operator() (cix_command cmd) const {
+    return static_cast<uint8_t> (cmd);
+  }
+};
+
+const unordered_map<cix_command,string,cix_hasher> cix_command_map {
+  {cix_command::ERROR, "ERROR"},
+  {cix_command::EXIT , "EXIT" },
+  {cix_command::GET  , "GET"  },
+  {cix_command::HELP , "HELP" },
+  {cix_command::LS   , "LS"   },
+  {cix_command::PUT  , "PUT"  },
+  {cix_command::RM   , "RM"   },
+  {cix_command::FILE , "FILE" },
+  {cix_command::LSOUT, "LSOUT"},
+  {cix_command::ACK  , "ACK"  },
+  {cix_command::NAK  , "NAK"  },
+};
 
 
 void send_packet (base_socket& socket, 
@@ -51,18 +54,19 @@ void recv_packet (base_socket& socket, void* buffer, size_t bufsize) {
 
 
 ostream& operator<< (ostream& out, const cix_header& header) {
-   string code = to_string (header.command);
-   cout << "{" << ntohl (header.nbytes) << "," 
-   << unsigned (header.command) 
-   << "(" << code << "),\"" << header.filename << "\"}";
-   return out;
+  const auto& itor = cix_command_map.find (header.command);
+  string code = itor == cix_command_map.end() ? "?" : itor->second;
+  cout << "{" << header.nbytes << "," 
+  << unsigned (header.command) 
+  << "(" << code << "),\"" << header.filename << "\"}";
+  return out;
 }    
 
 string get_cix_server_host (const vector<string>& args, size_t index) {
-   if (index < args.size()) return args[index];
-   char* host = getenv ("CIX_SERVER_HOST");
-   if (host != nullptr) return host;
-   return "localhost";
+  if (index < args.size()) return args[index];
+  char* host = getenv ("CIX_SERVER_HOST");
+  if (host != nullptr) return host;
+  return "localhost";
 }
 
 in_port_t get_cix_server_port (const vector<string>& args, 
@@ -70,8 +74,8 @@ size_t index) {
   string port = "-1";
   if (index < args.size()) port = args[index];
   else {
-      char* envport = getenv ("CIX_SERVER_PORT");
-      if (envport != nullptr) port = envport;
+    char* envport = getenv ("CIX_SERVER_PORT");
+    if (envport != nullptr) port = envport;
   }
   return stoi (port);
 }
