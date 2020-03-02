@@ -1,5 +1,5 @@
 // $Id: protocol.cpp,v 1.11 2020-02-24 18:35:42-08 - - $
-//Matthew Klein and Andrew
+//Matthew Klein and Andrew Oceguera
 #include <string>
 #include <unordered_map>
 using namespace std;
@@ -20,12 +20,11 @@ const unordered_map<cix_command,string,cix_hasher> cix_command_map {
   {cix_command::LS   , "LS"   },
   {cix_command::PUT  , "PUT"  },
   {cix_command::RM   , "RM"   },
-  {cix_command::FILE , "FILE" },
+  {cix_command::FILEOUT , "FILEOUT" },
   {cix_command::LSOUT, "LSOUT"},
   {cix_command::ACK  , "ACK"  },
   {cix_command::NAK  , "NAK"  },
 };
-
 
 void send_packet (base_socket& socket, 
 const void* buffer, size_t bufsize) {

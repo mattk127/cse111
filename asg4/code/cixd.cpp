@@ -1,5 +1,5 @@
 // $Id: cixd.cpp,v 1.8 2019-04-05 15:04:28-07 - - $
-//Matthew Klein and Andrew
+//Matthew Klein and Andrew Oceguera
 #include <iostream>
 #include <string>
 #include <vector>
@@ -24,7 +24,7 @@ void reply_ls (accepted_socket& client_sock, cix_header& header) {
   if (ls_pipe == NULL) { 
     outlog << "ls -l: popen failed: " << strerror (errno) << endl;
     header.command = cix_command::NAK;
-    header.nbytes = htonl (errno);
+    header.nbytes = errno;
     send_packet (client_sock, &header, sizeof header);
     return;
   }
@@ -42,7 +42,7 @@ void reply_ls (accepted_socket& client_sock, cix_header& header) {
   << " signal " << (status & 0x7F) << " core " 
   << (status >> 7 & 1) << endl;
   header.command = cix_command::LSOUT;
-  header.nbytes = htonl (ls_output.size());
+  header.nbytes = ls_output.size();
   memset (header.filename, 0, FILENAME_SIZE);
   outlog << "sending header " << header << endl;
   send_packet (client_sock, &header, sizeof header);
@@ -70,7 +70,7 @@ void reply_get (accepted_socket& client_sock, cix_header& header) {
   getFile.append (buffer);
   file.close();
 
-  header.command = cix_command::FILE;
+  header.command = cix_command::FILEOUT;
   header.nbytes = getFile.size();
   memset (header.filename, 0, FILENAME_SIZE);
   outlog << "sending header " << header << endl;

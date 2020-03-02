@@ -1,5 +1,5 @@
 # $Id: Makefile,v 1.16 2019-11-06 14:10:27-08 - - $
-
+# Matthew Klein and Andrew Oceguera
 MKFILE      = Makefile
 DEPFILE     = ${MKFILE}.dep
 NOINCL      = ci clean spotless
@@ -15,7 +15,7 @@ UTILBIN     = /afs/cats.ucsc.edu/courses/cse111-wm/bin
 MODULES     = logstream protocol sockets
 EXECBINS    = cix cixd
 ALLMODS     = ${MODULES} ${EXECBINS}
-SOURCELIST  = ${foreach MOD, ${ALLMODS}, ${MOD}.h ${MOD}.tcc ${MOD}.cpp}
+SOURCELIST  =${foreach MOD, ${ALLMODS}, ${MOD}.h ${MOD}.tcc ${MOD}.cpp}
 CPPSOURCE   = ${wildcard ${MODULES:=.cpp} ${EXECBINS:=.cpp}}
 ALLSOURCE   = ${wildcard ${SOURCELIST}} ${MKFILE}
 CPPLIBS     = ${wildcard ${MODULES:=.cpp}}
