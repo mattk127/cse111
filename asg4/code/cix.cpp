@@ -18,7 +18,7 @@ using namespace std;
 #include "logstream.h"
 #include "sockets.h"
 
-logstream log (cout);
+logstream outlog (cout);
 struct cix_exit: public exception {};
 
 unordered_map<string,cix_command> command_map {
@@ -54,17 +54,17 @@ void cix_help() {
 void cix_ls (client_socket& server) {
   cix_header header;
   header.command = cix_command::LS;
-  log << "sending header " << header << endl;
+  outlog << "sending header " << header << endl;
   send_packet (server, &header, sizeof header);
   recv_packet (server, &header, sizeof header);
-  log << "received header " << header << endl;
+  outlog << "received header " << header << endl;
   if (header.command != cix_command::LSOUT) {
-    log << "sent LS, server did not return LSOUT" << endl;
-    log << "server returned " << header << endl;
+    outlog << "sent LS, server did not return LSOUT" << endl;
+    outlog << "server returned " << header << endl;
   }else {
     char buffer[header.nbytes + 1];
     recv_packet (server, buffer, header.nbytes);
-    log << "received " << header.nbytes << " bytes" << endl;
+    outlog << "received " << header.nbytes << " bytes" << endl;
     buffer[header.nbytes] = '\0';
     cout << buffer;
   }
@@ -74,18 +74,18 @@ void cix_get(client_socket& server, string filename){
   cix_header header;
   header.command = cix_command::GET;
   filename.copy(header.filename, filename.size());
-  log << "sending header " << header << endl;
+  outlog << "sending header " << header << endl;
   send_packet(server, &header, sizeof header);
   recv_packet(server, &header, sizeof header);
-  log << "received header " << header << endl;
+  outlog << "received header " << header << endl;
 
   if (header.command != cix_command::FILE) {
-    log << "Error: No such file: " << header.filename << endl;
+    outlog << "Error: No such file: " << header.filename << endl;
     return;
   }else{
     char buffer[header.nbytes + 1];
     recv_packet(server, buffer, header.nbytes);
-    log << "received " << header.nbytes << " bytes" << endl;
+    outlog << "received " << header.nbytes << " bytes" << endl;
     buffer[header.nbytes] = '\0';
     ofstream outfile (filename, ofstream::out);
     outfile.write(buffer, sizeof buffer);
@@ -100,17 +100,18 @@ void cix_rm(client_socket& server, string filename){
   filename.copy (header.filename, filename.size());
   header.nbytes = 0;
 
-  log << "sending header " << header << endl;
+  outlog << "sending header " << header << endl;
   send_packet (server, &header, sizeof header);
   recv_packet (server, &header, sizeof header);
-  log << "received header " << header << endl;
+  outlog << "received header " << header << endl;
 
   if (header.command != cix_command::ACK) {
-    log << "Error: No such file: " << header.filename << endl;
+    outlog << "Error: No such file: " << header.filename << endl;
     return;
   }
   else{ 
-    log << header.filename << ": file succesfully removed." << endl;
+    outlog << header.filename << ": file succesfully removed." 
+    << endl;
   }
 }
 
@@ -125,7 +126,7 @@ void cix_put (client_socket& server, string& filename) {
   ifstream file (filename);
 
   if (file.fail()) {
-    log << "Error: No such file: " << header.filename << endl;
+    outlog << "Error: No such file: " << header.filename << endl;
   return;
   }else{
     while(file.good()){
@@ -138,32 +139,32 @@ void cix_put (client_socket& server, string& filename) {
   file.close();
   header.nbytes = getFile.size();
 
-  log << "sending header " << header << endl;
+  outlog << "sending header " << header << endl;
   send_packet (server, &header, sizeof header);
   send_packet (server, getFile.c_str(), getFile.size());
-  log << "sent " << getFile.size() << " bytes" << endl;
+  outlog << "sent " << getFile.size() << " bytes" << endl;
   recv_packet (server, &header, sizeof header);
-  log << "received header " << header << endl;
+  outlog << "received header " << header << endl;
 
   if (header.command != cix_command::ACK) {
-    log << "sent CIX_PUT, server did not return CIX_ACK" << endl;
-    log << "server returned " << header << endl;
-    log << "put: " << filename << ": " << strerror(header.nbytes) 
+    outlog << "sent CIX_PUT, server did not return CIX_ACK" << endl;
+    outlog << "server returned " << header << endl;
+    outlog << "put: " << filename << ": " << strerror(header.nbytes) 
     << endl;
   }else{
-    log << "put: " << filename << ": OK" << endl;
+    outlog << "put: " << filename << ": OK" << endl;
   }
 }
 
 
 void usage() {
-  cerr << "Usage: " << log.execname() << " [host] [port]" << endl;
+  cerr << "Usage: " << outlog.execname() << " [host] [port]" << endl;
   throw cix_exit();
 }
 
 int main (int argc, char** argv) {
-  log.execname (basename (argv[0]));
-  log << "starting" << endl;
+  outlog.execname (basename (argv[0]));
+  outlog << "starting" << endl;
   vector<string> args (&argv[1], &argv[argc]);
   string host;
   in_port_t port;
@@ -177,55 +178,54 @@ int main (int argc, char** argv) {
     port = get_cix_server_port (args, 1);
   }
   
-  log << to_string (hostinfo()) << endl;
+  outlog << to_string (hostinfo()) << endl;
   
   try {
-    log << "connecting to " << host << " port " << port << endl;
+    outlog << "connecting to " << host << " port " << port << endl;
     client_socket server (host, port);
-    log << "connected to " << to_string (server) << endl;
+    outlog << "connected to " << to_string (server) << endl;
     for (;;) {
-        string line;
-        getline (cin, line);
-        if (cin.eof()) throw cix_exit();
-        log << "command: " << line << endl;
-        size_t fst_pos_space = line.find(" ");
-        string cmd_str = line.substr(0, fst_pos_space);
-        string args = (fst_pos_space != string::npos?
-        line.substr(fst_pos_space+1,
-        line.size()): "");
-        
-        const auto& itor = command_map.find (cmd_str);
-        cix_command cmd = itor == command_map.end()
-        ? cix_command::ERROR : itor->second;
-        switch (cmd) {
-          case cix_command::EXIT:
-            throw cix_exit();
-            break;
-          case cix_command::HELP:
-            cix_help();
-            break;
-          case cix_command::LS:
-            cix_ls (server);
-            break;
-          case cix_command::GET:
-            cix_get (server, args);
-            break;
-          case cix_command::RM:
-            cix_rm (server, args);
-            break;
-          case cix_command::PUT:
-            cix_put (server, args);
-            break;
-          default:
-            log << cmd_str << ": invalid command" << endl;
-            break;
-        }
+      string line;
+      getline (cin, line);
+      if (cin.eof()) throw cix_exit();
+      outlog << "command: " << line << endl;
+      size_t fst_pos_space = line.find(" ");
+      string cmd_str = line.substr(0, fst_pos_space);
+      string args1 = (fst_pos_space != string::npos?
+      line.substr(fst_pos_space+1,
+      line.size()): "");
+      const auto& itor = command_map.find (cmd_str);
+      cix_command cmd = itor == command_map.end()
+      ? cix_command::ERROR : itor->second;
+      switch (cmd) {
+        case cix_command::EXIT:
+          throw cix_exit();
+          break;
+        case cix_command::HELP:
+          cix_help();
+          break;
+        case cix_command::LS:
+          cix_ls (server);
+          break;
+        case cix_command::GET:
+          cix_get (server, args1);
+          break;
+        case cix_command::RM:
+          cix_rm (server, args1);
+          break;
+        case cix_command::PUT:
+          cix_put (server, args1);
+          break;
+        default:
+          outlog << cmd_str << ": invalid command" << endl;
+          break;
+      }
     }
   }catch (socket_error& error) {
-    log << error.what() << endl;
+    outlog << error.what() << endl;
   }catch (cix_exit& error) {
-    log << "caught cix_exit" << endl;
+    outlog << "caught cix_exit" << endl;
   }
-  log << "finishing" << endl;
+  outlog << "finishing" << endl;
   return 0;
 }

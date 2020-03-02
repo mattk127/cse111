@@ -1,5 +1,5 @@
 // $Id: protocol.cpp,v 1.11 2020-02-24 18:35:42-08 - - $
-
+//Matthew Klein and 
 #include <string>
 #include <unordered_map>
 using namespace std;
@@ -15,7 +15,7 @@ string to_string (cix_command command) {
       case cix_command::LS     : return "LS"     ;
       case cix_command::PUT    : return "PUT"    ;
       case cix_command::RM     : return "RM"     ;
-      case cix_command::FILEOUT: return "FILEOUT";
+      case cix_command::FILE: return "FILE";
       case cix_command::LSOUT  : return "LSOUT"  ;
       case cix_command::ACK    : return "ACK"    ;
       case cix_command::NAK    : return "NAK"    ;
@@ -24,8 +24,8 @@ string to_string (cix_command command) {
 }
 
 
-void send_packet (base_socket& socket,
-                  const void* buffer, size_t bufsize) {
+void send_packet (base_socket& socket, 
+const void* buffer, size_t bufsize) {
    const char* bufptr = static_cast<const char*> (buffer);
    ssize_t ntosend = bufsize;
    do {
@@ -42,8 +42,8 @@ void recv_packet (base_socket& socket, void* buffer, size_t bufsize) {
    do {
       ssize_t nbytes = socket.recv (bufptr, ntorecv);
       if (nbytes < 0) throw socket_sys_error (to_string (socket));
-      if (nbytes == 0) throw socket_error (to_string (socket)
-                                           + " is closed");
+      if (nbytes == 0) throw socket_error (to_string (socket) 
+      + " is closed");
       bufptr += nbytes;
       ntorecv -= nbytes;
    }while (ntorecv > 0);
@@ -52,9 +52,9 @@ void recv_packet (base_socket& socket, void* buffer, size_t bufsize) {
 
 ostream& operator<< (ostream& out, const cix_header& header) {
    string code = to_string (header.command);
-   cout << "{" << ntohl (header.nbytes) << ","
-        << unsigned (header.command)
-        << "(" << code << "),\"" << header.filename << "\"}";
+   cout << "{" << ntohl (header.nbytes) << "," 
+   << unsigned (header.command) 
+   << "(" << code << "),\"" << header.filename << "\"}";
    return out;
 }    
 
@@ -65,14 +65,14 @@ string get_cix_server_host (const vector<string>& args, size_t index) {
    return "localhost";
 }
 
-in_port_t get_cix_server_port (const vector<string>& args,
-                               size_t index) {
-   string port = "-1";
-   if (index < args.size()) port = args[index];
-   else {
+in_port_t get_cix_server_port (const vector<string>& args, 
+size_t index) {
+  string port = "-1";
+  if (index < args.size()) port = args[index];
+  else {
       char* envport = getenv ("CIX_SERVER_PORT");
       if (envport != nullptr) port = envport;
-   }
-   return stoi (port);
+  }
+  return stoi (port);
 }
      

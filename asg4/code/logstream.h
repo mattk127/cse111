@@ -1,5 +1,5 @@
 // $Id: logstream.h,v 1.2 2019-02-21 18:19:49-08 - - $
-
+//Matthew Klein and Andrew 
 //
 // class logstream
 // replacement for initial cout so that each call to a logstream
@@ -28,7 +28,7 @@ class logstream {
 
       // Constructor may or may not have the execname available.
       logstream (ostream& out_, const string& execname = ""):
-                 out (out_), execname_ (execname) {
+      out (out_), execname_ (execname) {
       }
 
       // First line of main should execname if logstream is global.
