@@ -49,6 +49,10 @@ class shape {
       shape& operator= (shape&&) = delete; // Prevent moving.
       virtual ~shape() {}
       virtual void draw (const vertex&, const rgbcolor&) const = 0;
+      virtual void draw_border (const vertex&,
+       const rgbcolor&, const float) const = 0;
+      virtual void showNum(const vertex&,
+       const rgbcolor&, const size_t&) const = 0;
       virtual void show (ostream&) const;
 };
 
@@ -71,6 +75,10 @@ class text: public shape {
    public:
       text (void* glut_bitmap_font, const string& textdata);
       virtual void draw (const vertex&, const rgbcolor&) const override;
+      virtual void draw_border (const vertex&,
+       const rgbcolor&, const float) const override;
+      virtual void showNum(const vertex&,
+       const rgbcolor&,const size_t&) const override;
       virtual void show (ostream&) const override;
 };
 
@@ -83,7 +91,12 @@ class ellipse: public shape {
       vertex dimension;
    public:
       ellipse (GLfloat width, GLfloat height);
-      virtual void draw (const vertex&, const rgbcolor&) const override;
+      virtual void draw (const vertex&,
+       const rgbcolor&) const override;
+      virtual void draw_border (const vertex&,
+       const rgbcolor&, const float) const override;
+      virtual void showNum(const vertex&,
+       const rgbcolor&,const size_t&) const override;
       virtual void show (ostream&) const override;
 };
 
@@ -102,6 +115,10 @@ class polygon: public shape {
    public:
       polygon (const vertex_list& vertices);
       virtual void draw (const vertex&, const rgbcolor&) const override;
+      virtual void draw_border (const vertex&,
+       const rgbcolor&, const float) const override;
+      virtual void showNum(const vertex&,
+       const rgbcolor&,const size_t&) const override;
       virtual void show (ostream&) const override;
 };
 
@@ -123,6 +140,16 @@ class square: public rectangle {
 class diamond: public polygon {
    public:
       diamond (const GLfloat width, const GLfloat height);
+};
+
+class triangle: public polygon {
+   public:
+      triangle (const vertex_list& vertices);
+};
+
+class equilateral: public triangle {
+   public:
+      equilateral (const GLfloat width);
 };
 
 ostream& operator<< (ostream& out, const shape&);
