@@ -38,7 +38,34 @@ void window::entry (int mouse_entered){
 }
 
 void window::display(){
-  
+  glClear(GL_COLOR_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT);
+  for(auto& object: window:objects){
+    if(object.center.ypos < 0){
+      object.center.ypos = window::height;
+    }
+    if(object.center.xpos < 0){
+      object.center.xpos = window::width;
+    }
+    if(object.center.ypos > window::height){
+      object.center.ypos = 0;
+    }
+    if(object.center.xpos > window::width){
+      object.center.xpos = 0;
+    }
+    object.draw();
+  }
+  if(window::selected_obj > window::objects.size()){
+    --window::selected_obj;
+  }else if(window::selected_obj < 
+    window::objects.size()-window::objects.size()){
+      ++window::selected_obj;
+  }else{
+    window::objects[window::selected_obj].draw_border(
+      borderColor, borderWidth, window::selected_obj);
+  }
+  mus.draw();
+  glutSwapBuffers();
 }
 
 void object::draw() {
