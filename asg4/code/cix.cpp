@@ -1,5 +1,5 @@
 // $Id: cix.cpp,v 1.9 2019-04-05 15:04:28-07 - - $
-//Matthew Klein and 
+//Matthew Klein and Andrew Oceguera
 #include <iostream>
 #include <string>
 #include <vector>
@@ -79,7 +79,7 @@ void cix_get(client_socket& server, string filename){
   recv_packet(server, &header, sizeof header);
   outlog << "received header " << header << endl;
 
-  if (header.command != cix_command::FILE) {
+  if (header.command != cix_command::FILEOUT) {
     outlog << "Error: No such file: " << header.filename << endl;
     return;
   }else{

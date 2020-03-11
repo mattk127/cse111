@@ -7,7 +7,7 @@
 // and a process id.  Template functions must be in header files
 // and the others are trivial.
 //
-
+//Matthew Klein and Andrew Oceguera
 #ifndef __LOGSTREAM_H__
 #define __LOGSTREAM_H__
 
