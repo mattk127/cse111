@@ -16,17 +16,17 @@ mouse window::mus;
 
 // Implementation of object functions.
 object::object (shared_ptr<shape> pshape_, vertex center_,
-                rgbcolor color_):
-      pshape(pshape_), center(center_), color(color_) {
+rgbcolor color_):
+pshape(pshape_), center(center_), color(color_) {
 }
 
 void object::draw() {
-   pshape->draw (center, color);
+  pshape->draw (center, color);
 }
 
 void object::move (GLfloat delta_x, GLfloat delta_y) {
-   center.xpos += delta_x;
-   center.ypos += delta_y;
+  center.xpos += delta_x;
+  center.ypos += delta_y;
 }
 
 // Implementation of mouse functions.
@@ -50,7 +50,7 @@ void mouse::draw() {
       glColor3ubv (color.ubvec);
       glRasterPos2i (10, 10);
       auto ubytes = reinterpret_cast<const GLubyte*>
-                    (text.str().c_str());
+      (text.str().c_str());
       glutBitmapString (font, ubytes);
    }
 }
