@@ -10,14 +10,35 @@ using namespace std;
 
 int window::width = 640; // in pixels
 int window::height = 480; // in pixels
+int window::moveBy = 4;
+rgbcolor window::borderColor = rgbcolor{0xFF,0x00,0x00};
+GLfloat window::borderWidth = 4.0;
 vector<object> window::objects;
 size_t window::selected_obj = 0;
 mouse window::mus;
 
+void window::close(){
+  exit (sys_info::exit_status());
+}
+
 // Implementation of object functions.
-object::object (shared_ptr<shape> pshape_, vertex center_,
-rgbcolor color_):
-pshape(pshape_), center(center_), color(color_) {
+object::object (const shared_ptr<shape>& shape, vertex where,
+rgbcolor colr) {
+  pshape = shape;
+  center = where;
+  color = colr;
+}
+
+void window::entry (int mouse_entered){
+  window::mus.entered = mouse_entered;
+  // if(window::mus.entered == GLUT_ENTERED){
+  //   DEBUGF('g',sys_info::execname)
+  // }
+  glutPostRedisplay();
+}
+
+void window::display(){
+  
 }
 
 void object::draw() {
