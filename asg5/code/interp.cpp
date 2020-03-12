@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <cmath>
 using namespace std;
 
 #include <GL/freeglut.h>
@@ -33,6 +34,16 @@ interpreter::factory_map {
    {"isosceles"   , &interpreter::make_isosceles },
    {"right_triangle"   , &interpreter::make_rt},
    {"diamond"   , &interpreter::make_diamond },
+};
+
+static unordered_map<string,void*> fontcode {
+  {"Fixed-8x13"    , GLUT_BITMAP_8_BY_13       },
+  {"Fixed-9x15"    , GLUT_BITMAP_9_BY_15       },
+  {"Helvetica-10"  , GLUT_BITMAP_HELVETICA_10  },
+  {"Helvetica-12"  , GLUT_BITMAP_HELVETICA_12  },
+  {"Helvetica-18"  , GLUT_BITMAP_HELVETICA_18  },
+  {"Times-Roman-10", GLUT_BITMAP_TIMES_ROMAN_10},
+  {"Times-Roman-24", GLUT_BITMAP_TIMES_ROMAN_24},
 };
 
 interpreter::shape_map interpreter::objmap;
