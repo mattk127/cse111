@@ -31,7 +31,7 @@ interpreter::factory_map {
    {"triangle" , &interpreter::make_triangle   },
    {"equilateral" , &interpreter::make_equilateral},
    {"isosceles"   , &interpreter::make_isosceles },
-   {"right_triangle"   , &interpreter::make_right_triangle},
+   {"right_triangle"   , &interpreter::make_rt},
    {"diamond"   , &interpreter::make_diamond },
 };
 
@@ -164,12 +164,58 @@ shape_ptr interpreter::make_polygon (param begin, param end) {
 }
 
 shape_ptr interpreter::make_rectangle (param begin, param end) {
-   DEBUGF ('f', range (begin, end));
-   return make_shared<rectangle> (GLfloat(), GLfloat());
+  DEBUGF ('f', range (begin, end));
+  if(begin == end){
+    throw runtime_error("Wrong number of args");
+  }
+  return make_shared<rectangle> (GLfloat(stof(begin[0])),
+  GLfloat(stof(begin[1])));
 }
 
 shape_ptr interpreter::make_square (param begin, param end) {
-   DEBUGF ('f', range (begin, end));
-   return make_shared<square> (GLfloat());
+  DEBUGF ('f', range (begin, end));
+  if(begin == end){
+    throw runtime_error("Wrong number of args");
+  }
+  return make_shared<rectangle> (GLfloat(stof(begin[0]));
 }
 
+shape_ptr interpreter::make_triangle (param begin, param end){
+  vertex_list verts;
+  auto tempBegin3 = begin;
+  int length3;
+  while(tempBegin3 != end){
+    ++tempBegin3;
+    ++length3;
+  }
+  if((length3 % 2) != 0){
+    throw runtime_error("Wrong number of args");
+  }
+  while(begin != end){
+    verts.push_back({GLfloat(stof(begin[0])), 
+    GLfloat(stof(begin[1]))});
+    ++begin;
+    ++begin;
+  }
+  return make_shared<triangle> (verts);
+}
+
+shape_ptr interpreter::make_equilateral (param begin, param end){
+  return make_shared<equilateral> (GLfloat(stof(begin[0])));
+}
+
+shape_ptr interpreter::make_isosceles (param begin, param end){
+  return make_shared<equilateral> (GLfloat(stof(begin[0])));
+}
+
+shape_ptr interpreter::make_rt (param begin, param end){
+  return make_shared<equilateral> (GLfloat(stof(begin[0])));
+}
+
+shape_ptr interpreter::make_diamond(param begin, param end){
+  if(begin == end){
+    throw runtime_error("wrong number of args");
+  }
+  return make_shared<diamond> (GLfloat(stof(begin[0])),
+  GLfloat(stof(begin[1]))
+}
