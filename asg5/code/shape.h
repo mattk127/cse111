@@ -156,6 +156,16 @@ class equilateral: public triangle {
       equilateral (const GLfloat width);
 };
 
+class right_triangle: public triangle{
+  public:
+    right_triangle(const GLfloat width);
+};
+
+class isosceles: public triangle{
+  public:
+    isosceles(const GLfloat width);
+};
+
 ostream& operator<< (ostream& out, const shape&);
 
 #endif
