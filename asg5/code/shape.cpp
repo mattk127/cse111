@@ -135,7 +135,7 @@ const rgbcolor& color, const size_t& number) const {
     }
 }
 void ellipse::draw_border (const vertex& center,
- const rgbcolor& color, const float width) const {
+ const rgbcolor& color, const float width, size_t& number) const {
    DEBUGF ('d', this << "(" << center << "," << color << ")");
    const GLfloat theta = 2.0 * M_PI / 64;
    showNum(center,color,number);

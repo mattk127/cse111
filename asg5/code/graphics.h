@@ -15,9 +15,9 @@ using namespace std;
 class object {
   private:
     shared_ptr<shape> pshape;
+  public:
     vertex center;
     rgbcolor color;
-  public:
     object (const shared_ptr<shape>& shape, vertex& where, rgbcolor color);
     void draw() {pshape->draw (center, color);}
     void draw_border (rgbcolor bcolor, GLfloat width, size_t number)

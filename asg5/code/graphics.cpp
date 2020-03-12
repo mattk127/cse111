@@ -24,7 +24,7 @@ void window::close(){
 }
 
 // Implementation of object functions.
-object::object (const shared_ptr<shape>& shape, vertex where,
+object::object (const shared_ptr<shape>& shape, vertex& where,
 rgbcolor colr) {
   pshape = shape;
   center = where;
@@ -42,7 +42,7 @@ void window::entry (int mouse_entered){
 void window::display(){
   glClear(GL_COLOR_BUFFER_BIT);
   glClear(GL_COLOR_BUFFER_BIT);
-  for(auto& object: window:objects){
+  for(auto& object: window::objects){
     if(object.center.ypos < 0){
       object.center.ypos = window::height;
     }
@@ -72,7 +72,7 @@ void window::display(){
 
 // Called when window is opened and when resized.
 void window::reshape (int width, int height) {
-  DEBUGF ('g', "width=" << width_ << ", height=" << height_);
+  DEBUGF ('g', "width=" << width << ", height=" << height);
   window::width = width;
   window::height = height;
   glMatrixMode (GL_PROJECTION);
@@ -202,8 +202,7 @@ void mouse::draw() {
     glRasterPos2i (10, 10);
     auto ubytes = reinterpret_cast<const GLubyte*>
     (text.str().c_str());
-    glutBitmapString (font, ubytes);
-  }
+    glutBitmapString (font, ubytes);  }
 }
 
 void window::main () {
