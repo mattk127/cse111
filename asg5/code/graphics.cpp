@@ -10,7 +10,7 @@ using namespace std;
 
 int window::width = 640; // in pixels
 int window::height = 480; // in pixels
-int window::moveBy = 4;
+float window::moveBy = 4;
 rgbcolor window::borderColor = rgbcolor{0xFF,0x00,0x00};
 GLfloat window::borderWidth = 4.0;
 vector<object> window::objects;

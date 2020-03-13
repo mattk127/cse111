@@ -63,7 +63,7 @@ class window {
     static void passivemotion (int x, int y);
     static void mousefn (int button, int state, int x, int y);
   public:
-    static int moveBy;
+    static float moveBy;
     static rgbcolor borderColor;
     static GLfloat borderWidth;
     static void push_back (const object& obj) 
