@@ -31,19 +31,7 @@ interpreter::factory_map {
    {"square"   , &interpreter::make_square   },
    {"triangle" , &interpreter::make_triangle   },
    {"equilateral" , &interpreter::make_equilateral},
-   {"isosceles"   , &interpreter::make_isosceles },
-   {"right_triangle"   , &interpreter::make_rt},
    {"diamond"   , &interpreter::make_diamond },
-};
-
-static unordered_map<string,void*> fontcode {
-  {"Fixed-8x13"    , GLUT_BITMAP_8_BY_13       },
-  {"Fixed-9x15"    , GLUT_BITMAP_9_BY_15       },
-  {"Helvetica-10"  , GLUT_BITMAP_HELVETICA_10  },
-  {"Helvetica-12"  , GLUT_BITMAP_HELVETICA_12  },
-  {"Helvetica-18"  , GLUT_BITMAP_HELVETICA_18  },
-  {"Times-Roman-10", GLUT_BITMAP_TIMES_ROMAN_10},
-  {"Times-Roman-24", GLUT_BITMAP_TIMES_ROMAN_24},
 };
 
 interpreter::shape_map interpreter::objmap;
@@ -179,8 +167,8 @@ shape_ptr interpreter::make_rectangle (param begin, param end) {
   if(begin == end){
     throw runtime_error("Wrong number of args");
   }
-  return make_shared<rectangle> (GLfloat(stof(begin[0])),
-  GLfloat(stof(begin[1])));
+  return make_shared<rectangle> (GLfloat(stof(begin[0])), 
+    GLfloat(stof(begin[1])));
 }
 
 shape_ptr interpreter::make_square (param begin, param end) {
@@ -188,7 +176,7 @@ shape_ptr interpreter::make_square (param begin, param end) {
   if(begin == end){
     throw runtime_error("Wrong number of args");
   }
-  return make_shared<rectangle> (GLfloat(stof(begin[0])));
+  return make_shared<square> (GLfloat(stof(begin[0])));
 }
 
 shape_ptr interpreter::make_triangle (param begin, param end){
@@ -212,16 +200,6 @@ shape_ptr interpreter::make_triangle (param begin, param end){
 }
 
 shape_ptr interpreter::make_equilateral (param begin, param end){
-  DEBUGF('f',range(begin,end));
-  return make_shared<equilateral> (GLfloat(stof(begin[0])));
-}
-
-shape_ptr interpreter::make_isosceles (param begin, param end){
-  DEBUGF('f',range(begin,end));
-  return make_shared<equilateral> (GLfloat(stof(begin[0])));
-}
-
-shape_ptr interpreter::make_rt (param begin, param end){
   DEBUGF('f',range(begin,end));
   return make_shared<equilateral> (GLfloat(stof(begin[0])));
 }

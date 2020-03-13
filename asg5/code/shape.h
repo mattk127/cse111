@@ -37,16 +37,36 @@ using shape_ptr = shared_ptr<shape>;
 //
 // Abstract base class for all shapes in this system.
 //
+static unordered_map<void*,string> fontname {
+   {GLUT_BITMAP_8_BY_13       , "Fixed-8x13"    },
+   {GLUT_BITMAP_9_BY_15       , "Fixed-9x15"    },
+   {GLUT_BITMAP_HELVETICA_10  , "Helvetica-10"  },
+   {GLUT_BITMAP_HELVETICA_12  , "Helvetica-12"  },
+   {GLUT_BITMAP_HELVETICA_18  , "Helvetica-18"  },
+   {GLUT_BITMAP_TIMES_ROMAN_10, "Times-Roman-10"},
+   {GLUT_BITMAP_TIMES_ROMAN_24, "Times-Roman-24"},
+};
+
+static unordered_map<string,void*> fontcode {
+   {"Fixed-8x13"    , GLUT_BITMAP_8_BY_13       },
+   {"Fixed-9x15"    , GLUT_BITMAP_9_BY_15       },
+   {"Helvetica-10"  , GLUT_BITMAP_HELVETICA_10  },
+   {"Helvetica-12"  , GLUT_BITMAP_HELVETICA_12  },
+   {"Helvetica-18"  , GLUT_BITMAP_HELVETICA_18  },
+   {"Times-Roman-10", GLUT_BITMAP_TIMES_ROMAN_10},
+   {"Times-Roman-24", GLUT_BITMAP_TIMES_ROMAN_24},
+};
 
 class shape {
    friend ostream& operator<< (ostream& out, const shape&);
-   protected:
-      inline shape(); // Only subclass may instantiate.
-   public:
+   private:
       shape (const shape&) = delete; // Prevent copying.
       shape& operator= (const shape&) = delete; // Prevent copying.
       shape (shape&&) = delete; // Prevent moving.
       shape& operator= (shape&&) = delete; // Prevent moving.
+   protected:
+      inline shape(); // Only subclass may instantiate.
+   public:
       virtual ~shape() {}
       virtual void draw (const vertex&, const rgbcolor&) const = 0;
       virtual void draw_border (const vertex&,
@@ -115,6 +135,7 @@ class circle: public ellipse {
 class polygon: public shape {
    protected:
       const vertex_list vertices;
+      rgbcolor border_color;
    public:
       polygon (const vertex_list& vertices);
       virtual void draw (const vertex&, const rgbcolor&) const override;
@@ -154,16 +175,6 @@ class triangle: public polygon {
 class equilateral: public triangle {
    public:
       equilateral (const GLfloat width);
-};
-
-class right_triangle: public triangle{
-  public:
-    right_triangle(const GLfloat width);
-};
-
-class isosceles: public triangle{
-  public:
-    isosceles(const GLfloat width);
 };
 
 ostream& operator<< (ostream& out, const shape&);

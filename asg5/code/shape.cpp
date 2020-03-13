@@ -9,25 +9,6 @@ using namespace std;
 #include "util.h"
 #include "graphics.h"
 
-static unordered_map<void*,string> fontname {
-   {GLUT_BITMAP_8_BY_13       , "Fixed-8x13"    },
-   {GLUT_BITMAP_9_BY_15       , "Fixed-9x15"    },
-   {GLUT_BITMAP_HELVETICA_10  , "Helvetica-10"  },
-   {GLUT_BITMAP_HELVETICA_12  , "Helvetica-12"  },
-   {GLUT_BITMAP_HELVETICA_18  , "Helvetica-18"  },
-   {GLUT_BITMAP_TIMES_ROMAN_10, "Times-Roman-10"},
-   {GLUT_BITMAP_TIMES_ROMAN_24, "Times-Roman-24"},
-};
-
-static unordered_map<string,void*> fontcode {
-   {"Fixed-8x13"    , GLUT_BITMAP_8_BY_13       },
-   {"Fixed-9x15"    , GLUT_BITMAP_9_BY_15       },
-   {"Helvetica-10"  , GLUT_BITMAP_HELVETICA_10  },
-   {"Helvetica-12"  , GLUT_BITMAP_HELVETICA_12  },
-   {"Helvetica-18"  , GLUT_BITMAP_HELVETICA_18  },
-   {"Times-Roman-10", GLUT_BITMAP_TIMES_ROMAN_10},
-   {"Times-Roman-24", GLUT_BITMAP_TIMES_ROMAN_24},
-};
 
 ostream& operator<< (ostream& out, const vertex& where) {
    out << "(" << where.xpos << "," << where.ypos << ")";
@@ -104,11 +85,11 @@ void text::draw_border(const vertex& center,
    glLineWidth(width);
    glBegin(GL_LINE_LOOP);
    glVertex2f(center.xpos - width, center.ypos - width);
-   glVertex2f(center.xpos - width, center.ypos + width + height);
-   glVertex2f(center.xpos + width + length, center.ypos +width + height);
-   glVertex2f(center.xpos + width + length, center.ypos - width);
+   glVertex2f(center.xpos - width, center.ypos + width + why);
+   glVertex2f(center.xpos + width + ex, center.ypos +width + why);
+   glVertex2f(center.xpos + width + ex, center.ypos - width);
    glEnd();
-   vertex count = {(center.xpos + (length/2)), (center.ypos + (height/2))};
+   vertex count = {(center.xpos + (ex/2)), (center.ypos + (why/2))};
    text::showNum(count,color,number);
 }
 void ellipse::draw (const vertex& center, const rgbcolor& color) const {
@@ -118,9 +99,9 @@ void ellipse::draw (const vertex& center, const rgbcolor& color) const {
    glBegin(GL_POLYGON);
    glEnable (GL_LINE_SMOOTH);
    glColor3ubv(color.ubvec);
-   for (GLfloat buf = 0; point < 2.0 * M_PI; buf += theta) {
-      glVertex2f (dimension.xpos/2 * cos(point) + center.xpos,
-                  dimension.ypos/2 * sin(point) + center.ypos);
+   for (GLfloat buf = 0; buf< 2.0 * M_PI; buf += theta) {
+      glVertex2f (dimension.xpos/2 * cos(buf) + center.xpos,
+                  dimension.ypos/2 * sin(buf) + center.ypos);
    }
    glEnd();
 }
@@ -135,7 +116,7 @@ const rgbcolor& color, const size_t& number) const {
     }
 }
 void ellipse::draw_border (const vertex& center,
- const rgbcolor& color, const float width, size_t& number) const {
+ const rgbcolor& color, const GLfloat& width, const size_t& number) const {
    DEBUGF ('d', this << "(" << center << "," << color << ")");
    const GLfloat theta = 2.0 * M_PI / 64;
    showNum(center,color,number);

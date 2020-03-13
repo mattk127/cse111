@@ -22,6 +22,7 @@ struct rgbcolor {
    explicit rgbcolor (GLubyte red, GLubyte green, GLubyte blue):
                rgb ({red, green,blue}) {};
    explicit rgbcolor (const string&);
+   const GLubyte* ubvec3() { return ubvec; }
    operator string() const;
 };
 
