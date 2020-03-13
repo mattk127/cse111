@@ -83,7 +83,7 @@ void interpreter::do_moveBy(param begin, param end){
   if(length != 1){
     throw runtime_error ("do_moveBy: wrong number of args");
   }
-  window::moveBy = stoi(begin[0]);
+  window::moveBy = stof(*begin);
 }
 
 void interpreter::do_border(param begin, param end){
@@ -93,7 +93,7 @@ void interpreter::do_border(param begin, param end){
     tempBegin1++;
     length1++;
   }
-  if(length1 != 2){
+  if(length1 != 1){
     throw runtime_error ("do_border: wrong number of args");
   }
   rgbcolor color {begin[0]};
