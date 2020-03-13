@@ -83,7 +83,7 @@ void interpreter::do_moveBy(param begin, param end){
   if(length != 1){
     throw runtime_error ("do_moveBy: wrong number of args");
   }
-  window::moveBy = stof(*begin);
+  window::moveBy = stof(begin[0]);
 }
 
 void interpreter::do_border(param begin, param end){
