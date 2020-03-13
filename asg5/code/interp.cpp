@@ -68,9 +68,9 @@ void interpreter::do_draw (param begin, param end) {
   if (itor == objmap.end()) {
     throw runtime_error (name + ": no such shape");
   }
-  rgbcolor color {begin[0]};
   vertex where {from_string<GLfloat> (begin[2]), 
-  from_string<GLfloat> (begin[3])};
+    from_string<GLfloat> (begin[3])};
+  rgbcolor color {begin[0]};
   window::push_back (object (itor->second, where, color));
 }
 void interpreter::do_moveBy(param begin, param end){
@@ -93,7 +93,7 @@ void interpreter::do_border(param begin, param end){
     tempBegin1++;
     length1++;
   }
-  if(length1 != 1){
+  if(length1 != 2){
     throw runtime_error ("do_border: wrong number of args");
   }
   rgbcolor color {begin[0]};
