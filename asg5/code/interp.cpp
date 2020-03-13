@@ -93,7 +93,7 @@ void interpreter::do_border(param begin, param end){
     tempBegin1++;
     length1++;
   }
-  if(length1 != 1){
+  if(length1 != 2){
     throw runtime_error ("do_border: wrong number of args");
   }
   rgbcolor color {begin[0]};
